@@ -6,6 +6,8 @@ const { title } = require("process");
 const { options } = require("node-os-utils");
 const memory = osu.mem;
 const cpu = osu.cpu;
+const { total } = osu.netstat.inOut()
+
 
 let cpuOverload;
 let alertFrequency;
@@ -46,6 +48,11 @@ setInterval(() => {
 		document.querySelector("#cpu-free").innerText = `${info} %`;
 	});
 
+	// Memory Free
+	memory.info().then((info) => {
+		document.querySelector('#memory-free').innerText = `${info.freeMemPercentage} %`
+	})
+
 	// Uptime
 	document.querySelector("#sys-uptime").innerText = secondsToDHMS(os.uptime());
 }, 1000);
@@ -63,6 +70,12 @@ document.querySelector("#os").innerText = `${os.type()} ${os.arch()}`;
 memory.info().then((info) => {
 	document.querySelector("#total-memory").innerText = info.totalMemMb;
 });
+
+memory.info().then((info) => {
+	document.querySelector('#free-memory').innerText = info.usedMemMb
+})
+
+document.querySelector('#ip-address').innerText = osu.os.ip()
 
 function secondsToDHMS(seconds) {
 	seconds = +seconds;
